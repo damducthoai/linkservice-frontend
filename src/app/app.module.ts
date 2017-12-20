@@ -1,9 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms'
 
 
 import { AppComponent } from './app.component';
 import { UrldataComponent } from './urldata/urldata.component';
+
 
 
 @NgModule({
@@ -12,7 +14,8 @@ import { UrldataComponent } from './urldata/urldata.component';
     UrldataComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

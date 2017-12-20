@@ -1,7 +1,7 @@
 <form action="{{backendurl}}" method="POST">
-  <input type="text" placeholder="Enter url here" name="url-text" id="url-text"/>
+  <input [(ngModel)]="url_text" type="text" placeholder="Enter url here" name="url_text"/>
   <br>
-  <input type="text" placeholder="Optional password" name="url-password" id="url-password"/>
+  <input [(ngModel)]="url_password" type="text" placeholder="Optional password" name="url_password"/>
   <br>
-  <input type="submit" value="OK" name="url-data-submit" id="url-data-submit"/>
+  <input class="btn btn-primary" type="button" value="OK" (click)="onSubmit()"/>
 </form>
