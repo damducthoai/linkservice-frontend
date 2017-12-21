@@ -1,3 +1,5 @@
+import { AppErrorHandler } from './urldata/app-error-handler';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -5,13 +7,18 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { UrldataComponent } from './urldata/urldata.component';
-
-
+import { ErrorHandler } from '@angular/core';
+import { UrlResultComponent } from './url-result/url-result.component';
+import { UrlResultsComponent } from './url-results/url-results.component';
+import { StringLimitPipe } from './string-limit.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    UrldataComponent
+    UrldataComponent,
+    UrlResultComponent,
+    UrlResultsComponent,
+    StringLimitPipe
   ],
   imports: [
     BrowserModule,
@@ -19,7 +26,9 @@ import { UrldataComponent } from './urldata/urldata.component';
     HttpModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [
+    // { provide: ErrorHandler, useClass: AppErrorHandler }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

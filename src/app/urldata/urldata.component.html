@@ -4,12 +4,15 @@ method="POST"
 
   <div class="form-group">
     <label for="url_text">URL</label>
-    <input
-      formControlName="url_text"
-      class="form-control" 
-      type="text" 
-      placeholder="Enter url here" 
-      id="url_text"/>
+    <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-link"></i></span>
+        <input
+        formControlName="url"
+        class="form-control" 
+        type="text" 
+        placeholder="Enter url here" 
+        id="url_text"/>
+    </div>
     <div *ngIf="url_text.touched && url_text.invalid" class="alert alert-danger">
       <div *ngIf="url_text.errors.required">URL Required</div>
       <div *ngIf="url_text.errors.pattern">URL does not supported</div>      
@@ -18,13 +21,19 @@ method="POST"
   
   <div class="form-group">
     <label for="url_password">Password</label>
-      <input
-        formControlName="url_password"
+      <div class="input-group">
+          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+        <input
+        formControlName="password"
         class="form-control"
         type="text"
         placeholder="Optional password"
         name="url_password"
         id="url_password"/>
+      </div>
   </div>
   <input class="btn btn-primary" type="submit" value="OK" [disabled]="url_text.invalid"/>
 </form>
+<div>
+  <app-url-results [results]="results"></app-url-results>
+</div>
