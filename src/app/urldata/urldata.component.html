@@ -1,7 +1,30 @@
-<form action="{{backendurl}}" method="POST">
-  <input [(ngModel)]="url_text" type="text" placeholder="Enter url here" name="url_text"/>
-  <br>
-  <input [(ngModel)]="url_password" type="text" placeholder="Optional password" name="url_password"/>
-  <br>
-  <input class="btn btn-primary" type="button" value="OK" (click)="onSubmit()"/>
+<form action="{{backend_url}}"
+method="POST"
+[formGroup]="form" (ngSubmit)="submit()">
+
+  <div class="form-group">
+    <label for="url_text">URL</label>
+    <input
+      formControlName="url_text"
+      class="form-control" 
+      type="text" 
+      placeholder="Enter url here" 
+      id="url_text"/>
+    <div *ngIf="url_text.touched && url_text.invalid" class="alert alert-danger">
+      <div *ngIf="url_text.errors.required">URL Required</div>
+      <div *ngIf="url_text.errors.pattern">URL does not supported</div>      
+    </div>
+  </div>
+  
+  <div class="form-group">
+    <label for="url_password">Password</label>
+      <input
+        formControlName="url_password"
+        class="form-control"
+        type="text"
+        placeholder="Optional password"
+        name="url_password"
+        id="url_password"/>
+  </div>
+  <input class="btn btn-primary" type="submit" value="OK" [disabled]="url_text.invalid"/>
 </form>
