@@ -3,11 +3,11 @@ import { AppResult } from './app-result';
 import { GLCommon } from './messages';
 import { AppError,NotFoundError } from './app-error';
 import { UrlDataValidators } from './urldata.validator';
-import { Http, Response } from '@angular/http';
+import { Http, Response, RequestOptions } from '@angular/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
-
+import {Headers} from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 
 import 'rxjs/add/operator/catch';
@@ -53,7 +53,13 @@ export class UrldataComponent implements OnInit {
     // this.appResult = new UrlResultComponent();
     let data = JSON.stringify(this.form.value);
     
-    this._http.post(this.backend_request, data,{headers:{'Content-Type': 'application/json'}})
+    
+
+    let options = new RequestOptions();
+    options.headers = new Headers();
+    options.headers.append('Content-Type', 'application/json');
+
+    this._http.post(this.backend_request, data,options)
     .catch((error: Response) =>{
         if(error.status === 404){
           return Observable.throw(new NotFoundError(error));
