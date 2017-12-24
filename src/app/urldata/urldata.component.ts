@@ -22,7 +22,9 @@ export class UrldataComponent implements OnInit {
 
   backend_url = "http://localhost:8080";
   backend_request = "http://localhost:8080/getlink";
+  backend_info = "http://localhost:8080/info";
   url_pattern = "https://www.fshare.vn/file/[a-zA-Z0-9]+$";
+  downloadUrl = "http://localhost:8080/download";
   
   form = new FormGroup({
     'url': new FormControl("",[
@@ -69,12 +71,75 @@ export class UrldataComponent implements OnInit {
     .subscribe( (response: Response) => {
       if(response.status === 202){
         let res = JSON.parse(response['_body']);
-        this.results.splice(0,0,res);
+        let key = res.url;
+        //this.results.splice(0,0,res);
         console.log(res);
+        let info_url = this.backend_info + "?url="+this.form.value.url;
+        console.log("info: "+info_url);
+        this._http.get(info_url)
+        .catch((error: Response) =>{
+          if(error.status === 404){
+            return Observable.throw(new NotFoundError(error));
+          }
+          return Observable.throw(new AppError(error));
+        })
+        .subscribe((response: Response) => {
+          if(response.status === 200){
+            let res = JSON.parse(response['_body']);
+            let info = {
+                key: key,
+                url: "#",
+                name: res.name,
+                size: res.size,
+                return: false
+            }
+            this.results.splice(0,0,info);
+            setTimeout(()=>{
+              this._http.get(this.downloadUrl+"/"+key).catch((error: Response) =>{
+                  if(error.status === 404){
+                    return Observable.throw(new NotFoundError(error));
+                  }
+                  return Observable.throw(new AppError(error));
+              }).subscribe((response: Response) => {
+                if(response.status === 200){
+                  console.log(" da hoan thanh");
+                  info.url = response['_body'];
+                  info.return = true;
+                }else{
+                  throw new AppError();
+                }
+              });
+            },5000);
+              
+            //console.log(info);
+            //console.log(this.results);
+          }else{
+            throw new AppError();
+          }
+        });
       }else{
         throw new AppError();
       }
     });
+  }
+  
+  getInfo(url){
+      this._http.get(url)
+      .catch((error: Response) =>{
+        if(error.status === 404){
+          return Observable.throw(new NotFoundError(error));
+        }
+        return Observable.throw(new AppError(error));
+      })
+      .subscribe((response: Response) => {
+        if(response.status === 202){
+          let res = JSON.parse(response['_body']);
+          //this.results.splice(0,0,res);
+          console.log(res);
+        }else{
+          throw new AppError();
+        }
+      });
   }
 
   get url_text(){
