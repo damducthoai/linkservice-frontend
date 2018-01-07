@@ -3,15 +3,17 @@ import { AppResult } from './app-result';
 import { GLCommon } from './messages';
 import { AppError,NotFoundError } from './app-error';
 import { UrlDataValidators } from './urldata.validator';
-import { Http, Response, RequestOptions } from '@angular/http';
+import { Http, Response, RequestOptions, Headers } from '@angular/http';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
-import {Headers} from '@angular/http';
 import { Observable } from 'rxjs/Observable';
-
+import {EventSourcePolyfill} from 'ng-event-source';
+import 'rxjs/Rx';
+import * as EventSource from 'eventsource'
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
+import { Subscription } from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-urldata',
@@ -21,11 +23,13 @@ import 'rxjs/add/observable/throw';
 export class UrldataComponent implements OnInit {
 
   backend_url = "http://localhost:8080";
-  backend_request = "http://localhost:8080/getlink";
+  backend_request = "http://localhost:8080/linkservice";
   backend_info = "http://localhost:8080/info";
   url_pattern = "https://www.fshare.vn/file/[a-zA-Z0-9]+$";
   downloadUrl = "http://localhost:8080/download";
-  
+
+  resultUrl = "http://localhost:8080/result";
+
   form = new FormGroup({
     'url': new FormControl("",[
       Validators.required,
@@ -36,32 +40,78 @@ export class UrldataComponent implements OnInit {
 
   results: any[] = [];
 
+  private clientId;
+
   constructor(private _http: Http) {
   }
 
-  ngOnInit() {
+  private sseStream: Subscription;
+
+  getClientId(){
+    console.log('get id started');
+    let idurl = 'http://localhost:8080/id';
+
+    let headers = new Headers();
+    let options = new RequestOptions({headers: headers, withCredentials: true });
+
+    this._http.get(idurl,options).subscribe(
+      (res) => {
+        //console.log(res);
+        this.clientId = res['_body'];
+        console.log("get id success: "+this.clientId);
+        this.getResult(this.clientId);
+        console.log("listenning server event");
+      },
+      (err)=>{
+          console.log(err);
+           this.clientId = null;
+      });
   }
+  getResult(id:string){
+    console.log("listenning at: "+id);
+    let headers = new Headers();
+    let options = new RequestOptions({headers: headers, withCredentials: true });
+    let source = new EventSource('http://localhost:8080/result/'+id);
+    
+    source.onmessage = (data =>{
+      console.log("receive new message");
+      let res = JSON.parse(data['data']);
+      console.log("xinc chao "+ res); 
 
+      this.results.splice(0,0,res);
+      //console.log(this.results);
+    });
+    source.onopen = (a) => {
+      console.log("on open event");
+      console.log(a);
+    };
+    source.onerror = (e) =>{
+      console.log("on error event");
+      console.log(e);
+      
+    };
+    
+  }
+  ngOnInit() {
+    console.log("init started");
+    this.getClientId();
+    //this.getResult(this.clientId);
+  }
   submit(){
-    // this.x +=1;
-    // //this.results.splice(0,0,{x:1});
-    // this.results.push({
-    //   url: "https://www.fshare.vn/file/P3YBDNV9AFYCJF6",
-    //   time: 10000,
-    //   size: "2GB",
-    //   name: "xin chao cac ban xxx " + this.x + "xxxxxxxxxxx"
-    // });
-    // console.log(this.results);
-    // this.appResult = new UrlResultComponent();
-    let data = JSON.stringify(this.form.value);
-    
-    
+    let jsonreq = { url: this.form.value.url,
+      password:this.form.value.password,
+      clientid: this.clientId
+    };
+    //let data = JSON.stringify(this.form.value);
+    let data = JSON.stringify(jsonreq);
 
-    let options = new RequestOptions();
-    options.headers = new Headers();
-    options.headers.append('Content-Type', 'application/json');
-
-    this._http.post(this.backend_request, data,options)
+    console.log(data);
+    
+    let headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+    let myoptions = new RequestOptions({headers: headers});
+    
+    this._http.post('http://localhost:8080/linkservice', data,myoptions)
     .catch((error: Response) =>{
         if(error.status === 404){
           return Observable.throw(new NotFoundError(error));
@@ -69,57 +119,11 @@ export class UrldataComponent implements OnInit {
         return Observable.throw(new AppError(error));
     })
     .subscribe( (response: Response) => {
-      if(response.status === 202){
-        let res = JSON.parse(response['_body']);
-        let key = res.url;
-        //this.results.splice(0,0,res);
-        console.log(res);
-        let info_url = this.backend_info + "?url="+this.form.value.url;
-        console.log("info: "+info_url);
-        this._http.get(info_url)
-        .catch((error: Response) =>{
-          if(error.status === 404){
-            return Observable.throw(new NotFoundError(error));
-          }
-          return Observable.throw(new AppError(error));
-        })
-        .subscribe((response: Response) => {
-          if(response.status === 200){
-            let res = JSON.parse(response['_body']);
-            let info = {
-                key: key,
-                url: "#",
-                name: res.name,
-                size: res.size,
-                return: false
-            }
-            this.results.splice(0,0,info);
-            setTimeout(()=>{
-              this._http.get(this.downloadUrl+"/"+key).catch((error: Response) =>{
-                  if(error.status === 404){
-                    return Observable.throw(new NotFoundError(error));
-                  }
-                  return Observable.throw(new AppError(error));
-              }).subscribe((response: Response) => {
-                if(response.status === 200){
-                  console.log(" da hoan thanh");
-                  info.url = response['_body'];
-                  info.return = true;
-                }else{
-                  throw new AppError();
-                }
-              });
-            },5000);
-              
-            //console.log(info);
-            //console.log(this.results);
-          }else{
-            throw new AppError();
-          }
-        });
-      }else{
-        throw new AppError();
-      }
+      var res = JSON.parse(response['_body']);
+      //console.log(response);
+      console.log(res);
+      //this.results.splice(0,0,res);
+      //this.getResult(res['id']);
     });
   }
   

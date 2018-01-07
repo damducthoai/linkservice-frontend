@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { Input } from '@angular/core/src/metadata/directives';
 
 @Component({
   selector: 'app-url-results',
@@ -8,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UrlResultsComponent implements OnInit {
 
+  //@Input() results:any;
+
   constructor() { }
 
   ngOnInit() {
+    console.log("day la list ket qua:");
+    
   }
 
 }
