@@ -10,13 +10,19 @@
 }
 app-url-results{
     margin: 0 auto;
-    max-width: 600px;
-    padding: 50px 100px 50px 100px;
 }
 body{
     margin: 0 auto;
-    max-width: 800px;
+    max-width: 600px;
 }
-app-url-result{
-    margin-top: 10px;
+.result{
+    text-align: center;
 }
+#results{
+    margin: 40px auto;
+    
+}
+#line1{
+    width: 100%;
+    height: 4px;
+    background-color: darkcyan;}

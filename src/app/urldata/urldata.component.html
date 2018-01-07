@@ -1,45 +1,48 @@
-<form action="{{backend_url}}"
-method="POST"
-[formGroup]="form" (ngSubmit)="submit()" id="my-form">
-
-  <div class="form-group">
-    <label for="url_text">URL</label>
-    <div class="input-group">
-        <span class="input-group-addon"><i class="glyphicon glyphicon-link"></i></span>
-        <input
-        formControlName="url"
-        class="form-control" 
-        type="text" 
-        placeholder="Enter url here" 
-        id="url_text"/>
-    </div>
-    <div *ngIf="url_text.touched && url_text.invalid" class="alert alert-danger">
-      <div *ngIf="url_text.errors.required">URL Required</div>
-      <div *ngIf="url_text.errors.pattern">URL does not supported</div>      
-    </div>
-  </div>
-  
-  <div class="form-group">
-    <label for="url_password">Password</label>
-      <div class="input-group">
-          <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-        <input
-        formControlName="password"
-        class="form-control"
-        type="text"
-        placeholder="Optional password"
-        name="url_password"
-        id="url_password"/>
-      </div>
-  </div>
-  <input class="btn btn-primary" type="submit" value="OK" [disabled]="url_text.invalid"/>
-</form>
+<ng-progress></ng-progress>
 <div>
-  <app-url-results [results]="results"></app-url-results>
-  <!-- <ul>
-      <li *ngFor="let result of results">
-        <div>xin choa {{result.id}}</div>
-      </li>
-    </ul> -->
-  <!-- <app-url-result [results]="results"></app-url-result> -->
+    
+    <form action="{{backend_url}}"
+    method="POST"
+    [formGroup]="form" (ngSubmit)="submit()" id="my-form">
+    
+      <div class="form-group">
+        <label for="url_text">URL</label>
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-link"></i></span>
+            <input
+            formControlName="url"
+            class="form-control" 
+            type="text" 
+            placeholder="Enter url here" 
+            id="url_text"/>
+        </div>
+        <div *ngIf="url_text.touched && url_text.invalid" class="alert alert-danger">
+          <div *ngIf="url_text.errors.required">URL Required</div>
+          <div *ngIf="url_text.errors.pattern">URL does not supported</div>      
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="url_password">Password</label>
+          <div class="input-group">
+              <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            <input
+            formControlName="password"
+            class="form-control"
+            type="text"
+            placeholder="Optional password"
+            name="url_password"
+            id="url_password"/>
+          </div>
+      </div>
+      <input class="btn btn-primary" type="submit" value="OK" [disabled]="url_text.invalid"/>
+    </form>
+
+    <div id="results" *ngIf="results.length > 0 || requested > 0">
+        <div id="count">Request: {{requested}} | Success: {{results.length}}</div>
+        <div id="line1"></div>
+        <app-url-results [results]="results"></app-url-results>
+        
+    </div>
+    
 </div>

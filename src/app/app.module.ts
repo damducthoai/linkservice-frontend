@@ -13,6 +13,7 @@ import { UrlResultsComponent } from './url-results/url-results.component';
 import { StringLimitPipe } from './string-limit.pipe';
 import {ToastModule} from 'ng2-toastr/ng2-toastr';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { NgProgressModule } from '@ngx-progressbar/core';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
     HttpModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    ToastModule.forRoot()
+    ToastModule.forRoot(),
+    NgProgressModule.forRoot()
   ],
   providers: [
     // { provide: ErrorHandler, useClass: AppErrorHandler }

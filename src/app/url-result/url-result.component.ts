@@ -8,7 +8,7 @@ import { window } from 'rxjs/operators/window';
   selector: 'app-url-result',
   templateUrl: './url-result.component.html',
   styleUrls: ['./url-result.component.css'],
-  inputs: ['result','test','results']
+  inputs: ['result','test','results','i','total']
 })
 export class UrlResultComponent implements OnInit {
 

@@ -1,4 +1,5 @@
-<a (click)="clicked()"
-style="text-align: center"
-href="{{result.result}}" target="_blank" class="list-group-item">
-{{result.original| stringLimit:100}} | size: unknown | clicked: {{clickCount}}</a>
+<div>
+        {{total - i}} {{result.original}} | size: unknown | clicked: {{clickCount}} | <a (click)="clicked()"
+        style="text-align: center"
+        href="{{result.result}}" target="_blank">download</a>
+</div>

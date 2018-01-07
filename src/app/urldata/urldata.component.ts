@@ -1,3 +1,4 @@
+import { error } from 'selenium-webdriver';
 import { UrlResultComponent } from './../url-result/url-result.component';
 import { AppResult } from './app-result';
 import { GLCommon } from './messages';
@@ -16,6 +17,7 @@ import 'rxjs/add/observable/throw';
 import { Subscription } from 'rxjs/Subscription';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ViewContainerRef } from '@angular/core';
+import { NgProgress } from '@ngx-progressbar/core';
 
 @Component({
   selector: 'app-urldata',
@@ -32,6 +34,9 @@ export class UrldataComponent implements OnInit {
 
   resultUrl = "http://localhost:8080/result";
 
+  requested = 0;
+
+
   form = new FormGroup({
     'url': new FormControl("",[
       Validators.required,
@@ -40,11 +45,15 @@ export class UrldataComponent implements OnInit {
     'password': new FormControl()
   });
 
+  enableinput = true;
+
   results: any[] = [];
 
   private clientId;
 
-  constructor(private _http: Http,public toastr: ToastsManager, vcr: ViewContainerRef) {
+  constructor(private _http: Http,public toastr: ToastsManager, 
+    vcr: ViewContainerRef,
+    public progress: NgProgress) {
     this.toastr.setRootViewContainerRef(vcr);
   }
 
@@ -102,6 +111,7 @@ export class UrldataComponent implements OnInit {
       console.log("xinc chao "+ res); 
       //this.showSuccess();
       this.toastr.info(res.original,"Request processed");
+      
       this.results.splice(0,0,res);
       //console.log(this.results);
     });
@@ -122,6 +132,10 @@ export class UrldataComponent implements OnInit {
     //this.getResult(this.clientId);
   }
   submit(){
+    this.requested += 1;
+    this.enableinput = false;
+    this.progress.start();
+    
     let jsonreq = { url: this.form.value.url,
       password:this.form.value.password,
       clientid: this.clientId
@@ -135,20 +149,24 @@ export class UrldataComponent implements OnInit {
     headers.append('Content-Type', 'application/json');
     let myoptions = new RequestOptions({headers: headers});
     
+    this.form.reset();
     this._http.post('http://localhost:8080/linkservice', data,myoptions)
     .catch((error: Response) =>{
+      this.toastr.error("cannot process request","Error!");
+      this.progress.done();
         if(error.status === 404){
           return Observable.throw(new NotFoundError(error));
         }
         return Observable.throw(new AppError(error));
+       
     })
     .subscribe( (response: Response) => {
       var res = JSON.parse(response['_body']);
-      //console.log(response);
+      
       console.log(res);
       this.toastr.success(res.msg, 'Success!');
-      //this.results.splice(0,0,res);
-      //this.getResult(res['id']);
+
+      this.progress.done();
     });
   }
   
