@@ -11,6 +11,8 @@ import { ErrorHandler } from '@angular/core';
 import { UrlResultComponent } from './url-result/url-result.component';
 import { UrlResultsComponent } from './url-results/url-results.component';
 import { StringLimitPipe } from './string-limit.pipe';
+import {ToastModule} from 'ng2-toastr/ng2-toastr';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { StringLimitPipe } from './string-limit.pipe';
     BrowserModule,
     FormsModule,
     HttpModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    ToastModule.forRoot()
   ],
   providers: [
     // { provide: ErrorHandler, useClass: AppErrorHandler }

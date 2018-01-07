@@ -1,5 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
+@import "~ng2-toastr/bundles/ng2-toastr.min.css";
 .form-control.ng-touched.ng-invalid{
     /* border: 2px solid red; */
+}
+#my-form{
+    max-width: 400px;
+    margin: 0 auto;
+}
+app-url-results{
+    margin: 0 auto;
+    max-width: 600px;
+    padding: 50px 100px 50px 100px;
+}
+body{
+    margin: 0 auto;
+    max-width: 800px;
+}
+app-url-result{
+    margin-top: 10px;
 }

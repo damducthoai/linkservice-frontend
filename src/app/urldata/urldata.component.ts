@@ -14,6 +14,8 @@ import * as EventSource from 'eventsource'
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
 import { Subscription } from 'rxjs/Subscription';
+import { ToastsManager } from 'ng2-toastr/ng2-toastr';
+import { ViewContainerRef } from '@angular/core';
 
 @Component({
   selector: 'app-urldata',
@@ -42,7 +44,28 @@ export class UrldataComponent implements OnInit {
 
   private clientId;
 
-  constructor(private _http: Http) {
+  constructor(private _http: Http,public toastr: ToastsManager, vcr: ViewContainerRef) {
+    this.toastr.setRootViewContainerRef(vcr);
+  }
+
+
+  showSuccess() {
+    this.toastr.success('You are awesome!', 'Success!');
+  }
+  showError() {
+    this.toastr.error('This is not good!', 'Oops!');
+  }
+
+  showWarning() {
+    this.toastr.warning('You are being warned.', 'Alert!');
+  }
+
+  showInfo() {
+    this.toastr.info('Just some information for you.');
+  }
+  
+  showCustom() {
+    this.toastr.custom('<span style="color: red">Message in red.</span>', null, {enableHTML: true});
   }
 
   private sseStream: Subscription;
@@ -77,7 +100,8 @@ export class UrldataComponent implements OnInit {
       console.log("receive new message");
       let res = JSON.parse(data['data']);
       console.log("xinc chao "+ res); 
-
+      //this.showSuccess();
+      this.toastr.info(res.original,"Request processed");
       this.results.splice(0,0,res);
       //console.log(this.results);
     });
@@ -122,6 +146,7 @@ export class UrldataComponent implements OnInit {
       var res = JSON.parse(response['_body']);
       //console.log(response);
       console.log(res);
+      this.toastr.success(res.msg, 'Success!');
       //this.results.splice(0,0,res);
       //this.getResult(res['id']);
     });
