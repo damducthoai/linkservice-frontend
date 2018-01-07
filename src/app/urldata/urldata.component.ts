@@ -18,6 +18,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ViewContainerRef } from '@angular/core';
 import { NgProgress } from '@ngx-progressbar/core';
+import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 
 @Component({
   selector: 'app-urldata',
@@ -57,6 +58,7 @@ export class UrldataComponent implements OnInit {
     vcr: ViewContainerRef,
     public progress: NgProgress) {
     this.toastr.setRootViewContainerRef(vcr);
+    //console.log(this.location.prepareExternalUrl('xxx'));
   }
 
 
@@ -116,10 +118,12 @@ export class UrldataComponent implements OnInit {
       this.results.splice(0,0,res);
     });
     source.onopen = (a) => {
+      this.toastr.success("Welcome to my website","Connected!");
       console.log("on open event");
       console.log(a);
     };
     source.onerror = (e) =>{
+      this.toastr.error("Server not available","Error!");
       console.log("on error event");
       console.log(e);
     };
