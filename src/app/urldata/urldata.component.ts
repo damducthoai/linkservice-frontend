@@ -26,13 +26,15 @@ import { NgProgress } from '@ngx-progressbar/core';
 })
 export class UrldataComponent implements OnInit {
 
-  backend_url = "http://localhost:8080";
-  backend_request = "http://localhost:8080/linkservice";
-  backend_info = "http://localhost:8080/info";
-  url_pattern = "https://www.fshare.vn/file/[a-zA-Z0-9]+$";
-  downloadUrl = "http://localhost:8080/download";
+  server = "http://localhost:8080/";
 
-  resultUrl = "http://localhost:8080/result";
+  // backend_url = "http://localhost:8080";
+  // backend_request = "http://localhost:8080/linkservice";
+  // backend_info = "http://localhost:8080/info";
+   url_pattern = "https://www.fshare.vn/file/[a-zA-Z0-9]+$";
+  // downloadUrl = "http://localhost:8080/download";
+
+  // resultUrl = "http://localhost:8080/result";
 
   requested = 0;
 
@@ -81,7 +83,7 @@ export class UrldataComponent implements OnInit {
 
   getClientId(){
     console.log('get id started');
-    let idurl = 'http://localhost:8080/id';
+    let idurl = this.server + "id";
 
     let headers = new Headers();
     let options = new RequestOptions({headers: headers, withCredentials: true });
@@ -103,17 +105,15 @@ export class UrldataComponent implements OnInit {
     console.log("listenning at: "+id);
     let headers = new Headers();
     let options = new RequestOptions({headers: headers, withCredentials: true });
-    let source = new EventSource('http://localhost:8080/result/'+id);
+    let source = new EventSource(this.server + "result/"+id);
     
     source.onmessage = (data =>{
       console.log("receive new message");
       let res = JSON.parse(data['data']);
-      console.log("xinc chao "+ res); 
-      //this.showSuccess();
+
       this.toastr.info(res.original,"Request processed");
       
       this.results.splice(0,0,res);
-      //console.log(this.results);
     });
     source.onopen = (a) => {
       console.log("on open event");
@@ -122,14 +122,12 @@ export class UrldataComponent implements OnInit {
     source.onerror = (e) =>{
       console.log("on error event");
       console.log(e);
-      
     };
     
   }
   ngOnInit() {
     console.log("init started");
     this.getClientId();
-    //this.getResult(this.clientId);
   }
   submit(){
     this.requested += 1;
@@ -140,7 +138,6 @@ export class UrldataComponent implements OnInit {
       password:this.form.value.password,
       clientid: this.clientId
     };
-    //let data = JSON.stringify(this.form.value);
     let data = JSON.stringify(jsonreq);
 
     console.log(data);
@@ -150,7 +147,7 @@ export class UrldataComponent implements OnInit {
     let myoptions = new RequestOptions({headers: headers});
     
     this.form.reset();
-    this._http.post('http://localhost:8080/linkservice', data,myoptions)
+    this._http.post(this.server+'linkservice', data,myoptions)
     .catch((error: Response) =>{
       this.toastr.error("cannot process request","Error!");
       this.progress.done();
@@ -181,7 +178,7 @@ export class UrldataComponent implements OnInit {
       .subscribe((response: Response) => {
         if(response.status === 202){
           let res = JSON.parse(response['_body']);
-          //this.results.splice(0,0,res);
+          
           console.log(res);
         }else{
           throw new AppError();

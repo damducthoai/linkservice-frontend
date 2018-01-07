@@ -9,13 +9,9 @@ import { Input } from '@angular/core/src/metadata/directives';
 })
 export class UrlResultsComponent implements OnInit {
 
-  //@Input() results:any;
-
   constructor() { }
 
   ngOnInit() {
-    console.log("day la list ket qua:");
-    
   }
 
 }
