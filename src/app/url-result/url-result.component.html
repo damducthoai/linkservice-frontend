@@ -1,5 +1,5 @@
 <div>
-        {{total - i}} {{result.original}} | size: unknown | clicked: {{clickCount}} | <a (click)="clicked()"
+        {{total - i}} {{result.original}} | {{ result.time | date:'dd/MM/yy HH:mm' }} | clicked: {{clickCount}} <a (click)="clicked()"
         style="text-align: center"
         href="{{result.result}}" target="_blank">download</a>
 </div>

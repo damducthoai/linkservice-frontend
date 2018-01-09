@@ -29,13 +29,7 @@ export class UrldataComponent implements OnInit {
 
   server = "http://localhost:8080/";
 
-  // backend_url = "http://localhost:8080";
-  // backend_request = "http://localhost:8080/linkservice";
-  // backend_info = "http://localhost:8080/info";
-   url_pattern = "https://www.fshare.vn/file/[a-zA-Z0-9]+$";
-  // downloadUrl = "http://localhost:8080/download";
-
-  // resultUrl = "http://localhost:8080/result";
+  url_pattern = "https://www.fshare.vn/file/[a-zA-Z0-9]+(/?)";
 
   requested = 0;
 
