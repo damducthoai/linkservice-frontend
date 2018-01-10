@@ -24,7 +24,7 @@ import { NgProgress } from '@ngx-progressbar/core';
 })
 export class UrldataComponent implements OnInit {
 
-  server = "http://localhost:8080/";
+  server = "https://api-getlink.butchjgo.com/";
 
   url_pattern = "https://www.fshare.vn/file/[a-zA-Z0-9]+(/?)";
 
