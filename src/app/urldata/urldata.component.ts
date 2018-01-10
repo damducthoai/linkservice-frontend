@@ -33,6 +33,9 @@ export class UrldataComponent implements OnInit {
 
   requested = 0;
 
+  headers = new Headers();
+
+  requestOptions : RequestOptions;
 
   form = new FormGroup({
     'url': new FormControl("",[
@@ -54,26 +57,7 @@ export class UrldataComponent implements OnInit {
     this.toastr.setRootViewContainerRef(vcr);
     //console.log(this.location.prepareExternalUrl('xxx'));
   }
-
-
-  showSuccess() {
-    this.toastr.success('You are awesome!', 'Success!');
-  }
-  showError() {
-    this.toastr.error('This is not good!', 'Oops!');
-  }
-
-  showWarning() {
-    this.toastr.warning('You are being warned.', 'Alert!');
-  }
-
-  showInfo() {
-    this.toastr.info('Just some information for you.');
-  }
   
-  showCustom() {
-    this.toastr.custom('<span style="color: red">Message in red.</span>', null, {enableHTML: true});
-  }
 
   private sseStream: Subscription;
 
@@ -81,12 +65,8 @@ export class UrldataComponent implements OnInit {
     console.log('get id started');
     let idurl = this.server + "id";
 
-    let headers = new Headers();
-    let options = new RequestOptions({headers: headers, withCredentials: true });
-
-    this._http.get(idurl,options).subscribe(
+    this._http.get(idurl,this.requestOptions).subscribe(
       (res) => {
-        //console.log(res);
         this.clientId = res['_body'];
         console.log("get id success: "+this.clientId);
         this.getResult(this.clientId);
@@ -99,9 +79,8 @@ export class UrldataComponent implements OnInit {
   }
   getResult(id:string){
     console.log("listenning at: "+id);
-    let headers = new Headers();
-    let options = new RequestOptions({headers: headers, withCredentials: true });
-    let source = new EventSource(this.server + "result/"+id);
+    
+    let source = new EventSource(this.server + "result/"+id, {withCredentials: true});
     
     source.onmessage = (data =>{
       console.log("receive new message");
@@ -124,6 +103,9 @@ export class UrldataComponent implements OnInit {
     
   }
   ngOnInit() {
+    this.headers.append('Content-Type', 'application/json');
+    this.requestOptions = new RequestOptions({headers: this.headers, withCredentials: true });
+
     console.log("init started");
     this.getClientId();
   }
@@ -140,12 +122,8 @@ export class UrldataComponent implements OnInit {
 
     console.log(data);
     
-    let headers = new Headers();
-    headers.append('Content-Type', 'application/json');
-    let myoptions = new RequestOptions({headers: headers});
-    
     this.form.reset();
-    this._http.post(this.server+'linkservice', data,myoptions)
+    this._http.post(this.server+'linkservice', data,this.requestOptions)
     .catch((error: Response) =>{
       this.toastr.error("cannot process request","Error!");
       this.progress.done();
