@@ -9,16 +9,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, AbstractControl } from '@angular/forms';
 import { ValidationErrors } from '@angular/forms/src/directives/validators';
 import { Observable } from 'rxjs/Observable';
-import {EventSourcePolyfill} from 'ng-event-source';
 import 'rxjs/Rx';
 import * as EventSource from 'eventsource'
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/throw';
-import { Subscription } from 'rxjs/Subscription';
 import { ToastsManager } from 'ng2-toastr/ng2-toastr';
 import { ViewContainerRef } from '@angular/core';
 import { NgProgress } from '@ngx-progressbar/core';
-import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common';
 
 @Component({
   selector: 'app-urldata',
@@ -49,46 +46,28 @@ export class UrldataComponent implements OnInit {
 
   results: any[] = [];
 
-  private clientId;
-
   constructor(private _http: Http,public toastr: ToastsManager, 
     vcr: ViewContainerRef,
     public progress: NgProgress) {
     this.toastr.setRootViewContainerRef(vcr);
-    //console.log(this.location.prepareExternalUrl('xxx'));
   }
   
-
-  private sseStream: Subscription;
-
-  getClientId(){
-    console.log('get id started');
-    let idurl = this.server + "id";
-
-    this._http.get(idurl,this.requestOptions).subscribe(
-      (res) => {
-        this.clientId = res['_body'];
-        console.log("get id success: "+this.clientId);
-        this.getResult(this.clientId);
-        console.log("listenning server event");
-      },
-      (err)=>{
-          console.log(err);
-           this.clientId = null;
-      });
-  }
-  getResult(id:string){
-    console.log("listenning at: "+id);
+  getResult(){
     
-    let source = new EventSource(this.server + "result/"+id, {withCredentials: true});
+    let source = new EventSource(this.server + "result", {withCredentials: true});
     
     source.onmessage = (data =>{
       console.log("receive new message");
       let res = JSON.parse(data['data']);
 
-      this.toastr.info(res.original,"Request processed");
+      if(res.success){
+        this.toastr.info(res.original,"Request processed");
       
-      this.results.splice(0,0,res);
+        this.results.splice(0,0,res);
+      } else{
+        this.toastr.warning(res.original, "Cannot process");
+      }
+      
     });
     source.onopen = (a) => {
       this.toastr.success("Welcome to my website","Connected!");
@@ -107,7 +86,7 @@ export class UrldataComponent implements OnInit {
     this.requestOptions = new RequestOptions({headers: this.headers, withCredentials: true });
 
     console.log("init started");
-    this.getClientId();
+    this.getResult();
   }
   submit(){
     this.requested += 1;
@@ -115,8 +94,7 @@ export class UrldataComponent implements OnInit {
     this.progress.start();
     
     let jsonreq = { url: this.form.value.url,
-      password:this.form.value.password,
-      clientid: this.clientId
+      password:this.form.value.password
     };
     let data = JSON.stringify(jsonreq);
 
