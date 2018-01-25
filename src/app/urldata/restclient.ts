@@ -1,4 +1,4 @@
-import {Http, Response, RequestOptions, Request, Headers} from '@angular/http';
+import {Http} from '@angular/http';
 
 export class RestClient{
     

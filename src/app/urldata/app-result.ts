@@ -1,5 +1,4 @@
-import { OnInit } from '@angular/core';
-import {Observable} from 'rxjs/Rx';
+import {OnInit} from '@angular/core';
 
 export class AppResult implements OnInit {
 

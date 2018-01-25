@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-url-result',
@@ -9,7 +9,7 @@ import { Component, OnInit } from '@angular/core';
 export class UrlResultComponent implements OnInit {
 
   clickCount = 0;
-  
+
   constructor() { }
 
   ngOnInit() {

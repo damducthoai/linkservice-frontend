@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import {async, ComponentFixture, TestBed} from '@angular/core/testing';
 
-import { UrlResultComponent } from './url-result.component';
+import {UrlResultComponent} from './url-result.component';
 
 describe('UrlResultComponent', () => {
   let component: UrlResultComponent;

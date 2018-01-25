@@ -1,4 +1,4 @@
-import { StringLimitPipe } from './string-limit.pipe';
+import {StringLimitPipe} from './string-limit.pipe';
 
 describe('StringLimitPipe', () => {
   it('create an instance', () => {

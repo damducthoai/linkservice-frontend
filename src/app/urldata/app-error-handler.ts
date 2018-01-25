@@ -1,5 +1,5 @@
-import { ErrorHandler } from '@angular/core';
-import { GLCommon } from './messages';
+import {ErrorHandler} from '@angular/core';
+import {GLCommon} from './messages';
 
 export class AppErrorHandler extends ErrorHandler{
     handleError(error){

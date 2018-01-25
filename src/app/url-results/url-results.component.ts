@@ -1,5 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { Input } from '@angular/core/src/metadata/directives';
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-url-results',
